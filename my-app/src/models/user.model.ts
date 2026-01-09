@@ -91,6 +91,7 @@ const userSchema = new mongoose.Schema<IUser>(
     shopName: {
       type: String,
       unique: true,
+      sparse: true,
     },
     shopAddress: {
       type: String,

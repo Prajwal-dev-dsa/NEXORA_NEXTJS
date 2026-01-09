@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import connectDB from "./app/lib/db";
-import UserModel from "./app/models/user.model";
+import connectDB from "./lib/db";
+import UserModel from "./models/user.model";
 import bcrypt from "bcryptjs";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({

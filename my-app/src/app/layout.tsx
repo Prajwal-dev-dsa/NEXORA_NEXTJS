@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Provider from "@/components/Provider";
 
 export const metadata: Metadata = {
   title: "Nexora",
@@ -14,7 +15,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        {children}
+        <Provider>
+          {children}
+        </Provider>
       </body>
     </html>
   );

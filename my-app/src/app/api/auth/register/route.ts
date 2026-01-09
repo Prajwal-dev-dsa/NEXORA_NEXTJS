@@ -1,5 +1,5 @@
-import connectDB from "@/app/lib/db";
-import UserModel from "@/app/models/user.model";
+import connectDB from "@/lib/db";
+import UserModel from "@/models/user.model";
 import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 import validator from "validator";
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(newUser, { status: 201 });
   } catch (error) {
     return NextResponse.json(
-      { error: "Error in Register Route" },
+      { error: "Error in Register Route: " + error },
       { status: 500 }
     );
   }
