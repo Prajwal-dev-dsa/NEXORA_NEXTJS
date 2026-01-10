@@ -102,6 +102,7 @@ export default function LoginPage() {
 
         {/* Social Login */}
         <motion.button
+          onClick={async () => await signIn("google", { callbackUrl: "/" })}
           whileHover={{ scale: 1.02, backgroundColor: "rgba(255,255,255,0.1)" }}
           whileTap={{ scale: 0.98 }}
           className="w-full flex items-center justify-center gap-2 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-white font-medium py-3 rounded-xl transition-all cursor-pointer"
