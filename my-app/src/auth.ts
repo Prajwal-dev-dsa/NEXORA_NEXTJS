@@ -57,12 +57,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return true;
     },
     // creates token by adding the data of user inside the token
-    jwt({ token, user }) {
+    jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id as string;
         token.name = user.name as string;
         token.email = user.email as string;
         token.role = user.role as string;
+        token.phone = (user.phone as string) ?? "";
+      }
+      if (trigger === "update" && session.user) {
+        token.role = session.user.role as string;
+        token.phone = session.user.phone as string;
       }
       return token;
     },
@@ -74,6 +79,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.name = token.name as string;
         session.user.email = token.email as string;
         session.user.role = token.role as string;
+        session.user.phone = (token.phone as string) ?? "";
       }
       return session;
     },
