@@ -3,6 +3,11 @@ import EditRoleAndPhonePage from "@/components/EditRoleAndPhonePage";
 import connectDB from "@/lib/db";
 import UserModel from "@/models/user.model";
 import { redirect } from "next/navigation";
+import Navbar from "../components/Navbar";
+import UserDashboard from "@/components/user/UserDashboard";
+import AdminDashboard from "@/components/admin/AdminDashboard";
+import VendorDashboard from "@/components/vendor/VendorDashboard";
+import DeliveryGuyDashboard from "@/components/delivery/DeliveryGuyDashboard";
 
 async function page() {
   const session = await auth()
@@ -17,10 +22,15 @@ async function page() {
       </>
     );
   }
+  const plainUser = JSON.parse(JSON.stringify(user));
   return (
-    <div>
-      hello
-    </div>
+    <>
+      <Navbar user={plainUser} />
+      {plainUser.role === "user" && <UserDashboard />}
+      {plainUser.role === "admin" && <AdminDashboard />}
+      {plainUser.role === "vendor" && <VendorDashboard />}
+      {plainUser.role === "deliveryGuy" && <DeliveryGuyDashboard />}
+    </>
   )
 }
 
