@@ -1,8 +1,13 @@
-
+"use client"
+import HeroSection from "./HeroSection";
+import CategorySlider from "./CategorySlider";
 
 function UserDashboard() {
   return (
-    <div>UserDashboard</div>
+    <div>
+      <HeroSection />
+      <CategorySlider />
+    </div>
   )
 }
 
