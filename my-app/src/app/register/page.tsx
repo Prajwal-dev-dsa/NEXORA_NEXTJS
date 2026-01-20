@@ -11,14 +11,15 @@ import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 
 export default function RegisterPage() {
-  const router = useRouter()
+  const router = useRouter();
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     try {
       setLoading(true);
       const res = await axios.post(`/api/auth/register`, {
@@ -26,19 +27,18 @@ export default function RegisterPage() {
         email,
         password,
         redirect: false
-      })
-      console.log(res.data)
-      setName('')
-      setEmail('')
-      setPassword('')
-      router.push('/login')
+      });
+      console.log(res.data);
+      setName('');
+      setEmail('');
+      setPassword('');
+      router.push('/login');
     } catch (error) {
-      console.log(`Register handleSubmit Error ${error}`)
+      console.log(`Register handleSubmit Error ${error}`);
     } finally {
       setLoading(false);
     }
-  }
-
+  };
 
   return (
     <AuthLayout
@@ -46,8 +46,6 @@ export default function RegisterPage() {
       subtitle="Create your Nexora Account to get started"
     >
       <AnimatePresence mode="wait">
-
-        {/* REGISTRATION FORM */}
         <motion.div
           key="register-form"
           initial={{ opacity: 0, x: 20 }}
@@ -55,60 +53,67 @@ export default function RegisterPage() {
           exit={{ opacity: 0, x: -20 }}
           className="space-y-4"
         >
+          {/* Main Registration Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Inputs */}
+            <div className="space-y-4">
+              <div className="relative group">
+                <UserCircle className="absolute left-3 top-3.5 text-slate-400 group-focus-within:text-purple-500 transition-colors" size={20} />
+                <input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  type="text"
+                  placeholder="Full Name"
+                  required
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all"
+                />
+              </div>
 
-          {/* Inputs */}
-          <div className="space-y-4">
-            <div className="relative group">
-              <UserCircle className="absolute left-3 top-3.5 text-slate-400 group-focus-within:text-purple-500 transition-colors" size={20} />
-              <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                type="text"
-                placeholder="Full Name"
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all"
-              />
+              <div className="relative group">
+                <Mail className="absolute left-3 top-3.5 text-slate-400 group-focus-within:text-purple-500 transition-colors" size={20} />
+                <input
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  type="email"
+                  placeholder="Email Address"
+                  required
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all"
+                />
+              </div>
+
+              <div className="relative group">
+                <Lock className="absolute left-3 top-3.5 text-slate-400 group-focus-within:text-purple-500 transition-colors" size={20} />
+                <input
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  required
+                  className="w-full pl-10 pr-12 py-3 rounded-xl bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-3.5 text-slate-400 hover:text-purple-500 transition-colors cursor-pointer"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
             </div>
 
-            <div className="relative group">
-              <Mail className="absolute left-3 top-3.5 text-slate-400 group-focus-within:text-purple-500 transition-colors" size={20} />
-              <input
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                type="email"
-                placeholder="Email Address"
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all"
-              />
-            </div>
+            {/* Main Action Button */}
+            <motion.button
+              type="submit"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              disabled={loading}
+              className={`w-full flex items-center justify-center bg-linear-to-r from-purple-600 to-violet-600 hover:from-purple-500 hover:to-violet-500 text-white font-bold py-3 rounded-xl shadow-lg shadow-purple-500/30 transition-all ${loading ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'}`}
+            >
+              {loading ? <Loader className="animate-spin" /> : 'Create Account'}
+            </motion.button>
+          </form>
 
-            <div className="relative group">
-              <Lock className="absolute left-3 top-3.5 text-slate-400 group-focus-within:text-purple-500 transition-colors" size={20} />
-              <input
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
-                className="w-full pl-10 pr-12 py-3 rounded-xl bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all"
-              />
-              <button
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3.5 text-slate-400 hover:text-purple-500 transition-colors cursor-pointer"
-              >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
-            </div>
-          </div>
-
-          {/* Main Action Button */}
-          <motion.button
-            onClick={handleSubmit}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            disabled={loading}
-            className={`w-full flex items-center justify-center bg-linear-to-r from-purple-600 to-violet-600 hover:from-purple-500 hover:to-violet-500 text-white font-bold py-3 rounded-xl shadow-lg shadow-purple-500/30 transition-all ${loading ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'}`}
-          >
-            {loading ? <Loader className="animate-spin" /> : 'Create Account'}
-          </motion.button>
-
+          {/* Divider */}
           <div className="relative py-2">
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t border-slate-200 dark:border-white/10"></span>
@@ -118,7 +123,9 @@ export default function RegisterPage() {
             </div>
           </div>
 
+          {/* Social Login */}
           <motion.button
+            type="button"
             onClick={async () => await signIn("google", { callbackUrl: "/" })}
             whileHover={{ scale: 1.02, backgroundColor: "rgba(255,255,255,0.1)" }}
             whileTap={{ scale: 0.98 }}
@@ -128,6 +135,7 @@ export default function RegisterPage() {
             <span className="text-sm">Google</span>
           </motion.button>
 
+          {/* Footer Link */}
           <div className="text-center mt-4">
             <p className="text-sm text-slate-500 dark:text-slate-400">
               Already have an account?{' '}

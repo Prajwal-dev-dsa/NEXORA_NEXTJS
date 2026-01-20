@@ -6,8 +6,9 @@ import { redirect } from "next/navigation";
 import Navbar from "../components/Navbar";
 import UserDashboard from "@/components/user/UserDashboard";
 import AdminDashboard from "@/components/admin/AdminDashboard";
-import VendorDashboard from "@/components/vendor/VendorDashboard";
 import DeliveryGuyDashboard from "@/components/delivery/DeliveryGuyDashboard";
+import FillShopDetails from "@/components/vendor/FillShopDetails";
+import VendorPage from "@/components/vendor/VendorPage";
 
 async function page() {
   const session = await auth()
@@ -22,13 +23,20 @@ async function page() {
       </>
     );
   }
+  if (user?.role === "vendor" && (!user?.shopName || !user?.shopAddress || !user?.gstNumber)) {
+    return (
+      <>
+        <FillShopDetails />
+      </>
+    );
+  }
   const plainUser = JSON.parse(JSON.stringify(user));
   return (
     <>
       <Navbar user={plainUser} />
       {plainUser.role === "user" && <UserDashboard />}
       {plainUser.role === "admin" && <AdminDashboard />}
-      {plainUser.role === "vendor" && <VendorDashboard />}
+      {plainUser.role === "vendor" && <VendorPage user={plainUser} />}
       {plainUser.role === "deliveryGuy" && <DeliveryGuyDashboard />}
     </>
   )
