@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     const user = await UserModel.findOneAndUpdate(
       { email: session?.user?.email },
       { role, phone },
-      { new: true }
+      { new: true },
     );
     if (!user)
       return NextResponse.json({ message: "User not found" }, { status: 404 });
@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     return NextResponse.json(
       { message: `Error in Edit role phone route: ${error}` },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
