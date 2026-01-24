@@ -1,5 +1,6 @@
 import { IUser } from "@/models/user.model";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from "../store";
 
 // Define a type for the slice state
 export interface VendorState {
@@ -24,6 +25,6 @@ export const vendorSlice = createSlice({
 export const { setAllVendorsData } = vendorSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
-export const selectAllVendorsData = (state: VendorState) =>
-  state.allVendorsData;
+export const selectAllVendorsData = (state: RootState) =>
+  state.vendor.allVendorsData;
 export default vendorSlice.reducer;

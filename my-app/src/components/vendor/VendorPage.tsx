@@ -48,7 +48,7 @@ const VendorPage = ({ user }: { user: IUser }) => {
 
     setLoading(true);
     try {
-      const res = await axios.post('/api/vendor/fill-shop-details', formData);
+      const res = await axios.post('/api/vendor/verify-shop-details-again', formData);
       if (res.status === 200) {
         toast.success("Details submitted successfully!");
         setIsEditing(false);
@@ -206,7 +206,7 @@ const VendorPage = ({ user }: { user: IUser }) => {
             className="w-full group bg-white text-[#0B0518] hover:bg-slate-200 font-bold py-4 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             <Edit3 size={18} />
-            Edit Shop Details
+            Verify Again
             <ChevronRight size={18} className="opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all" />
           </motion.button>
 
