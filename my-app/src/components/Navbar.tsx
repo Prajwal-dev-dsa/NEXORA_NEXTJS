@@ -78,6 +78,7 @@ export default function Navbar({ user }: NavbarProps) {
       case 'admin':
       case 'vendor':
         return [
+          { label: 'My Profile', icon: UserIcon, href: '/profile' },
           { label: 'Add Product', icon: PackagePlus, href: '/add-product' },
           { label: 'View Products', icon: ShoppingBasket, href: '/products' },
           { label: 'Manage Orders', icon: LayoutDashboard, href: '/orders' },
@@ -89,7 +90,9 @@ export default function Navbar({ user }: NavbarProps) {
           { label: 'Settings', icon: Settings, href: '/settings' },
         ];
       case 'deliveryGuy':
-        return [];
+        return [
+          { label: 'My Profile', icon: UserIcon, href: '/profile' },
+        ];
       default:
         return [];
     }
