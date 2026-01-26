@@ -76,12 +76,16 @@ export default function Navbar({ user }: NavbarProps) {
   const getProfileMenu = () => {
     switch (user.role) {
       case 'admin':
+        return [
+          { label: 'My Profile', icon: UserIcon, href: '/profile' },
+          { label: 'View Products', icon: ShoppingBasket, href: '/products' },
+          { label: 'Manage Orders', icon: LayoutDashboard, href: '/orders' },
+        ];
       case 'vendor':
         return [
           { label: 'My Profile', icon: UserIcon, href: '/profile' },
-          { label: 'Add Product', icon: PackagePlus, href: '/add-product' },
+          { label: 'Add Product', icon: PackagePlus, href: `/${user.role}/add-product` },
           { label: 'View Products', icon: ShoppingBasket, href: '/products' },
-          { label: 'Manage Orders', icon: LayoutDashboard, href: '/orders' },
         ];
       case 'user':
         return [

@@ -144,10 +144,11 @@ const userSchema = new mongoose.Schema<IUser>(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 userSchema.index({ location: "2dsphere" });
 
-const UserModel = mongoose.models?.User || mongoose.model("User", userSchema);
+const UserModel =
+  mongoose.models?.User || mongoose.model<IUser>("User", userSchema);
 export default UserModel;

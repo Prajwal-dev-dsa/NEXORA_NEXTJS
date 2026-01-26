@@ -19,18 +19,21 @@ import {
     Building2,
     Calendar,
     CheckCircle2,
-    AlertCircle
+    AlertCircle,
+    ArrowLeft
 } from "lucide-react";
 import Image from "next/image";
 import { toast } from "sonner";
 import axios from "axios";
 import { setUserData } from "@/redux/slices/userSlice";
+import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
     // 1. Initialize User Data
     InitalizeUser();
     const { userData } = useSelector((state: RootState) => state.user);
     const dispatch = useDispatch();
+    const router = useRouter();
 
     // 2. Local State
     const [isEditing, setIsEditing] = useState(false);
@@ -153,17 +156,27 @@ export default function ProfilePage() {
     const isVendor = userData.role === "vendor";
 
     return (
-        <div className="min-h-screen bg-[#0B0518] text-white pt-24 pb-20 px-4 flex flex-col items-center relative overflow-hidden">
+        <div className="min-h-screen bg-[#0B0518] text-white md:pt-20 pb-20 px-4 flex flex-col items-center relative overflow-hidden">
 
             {/* Ambient Background Glow */}
             <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-purple-900/20 rounded-full blur-[120px] pointer-events-none" />
             <div className="fixed bottom-0 right-0 w-[500px] h-[500px] bg-indigo-900/10 rounded-full blur-[100px] pointer-events-none" />
 
             {/* --- HEADER IDENTITY SECTION --- */}
+            <div className="w-full flex justify-start pt-8 pl-1 md:pt-10 md:pl-32 mb-4 md:mb-0 md:absolute md:top-0 md:left-0">
+                <button
+                    onClick={() => router.back()}
+                    className="p-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 hover:text-white transition-all group cursor-pointer"
+                >
+                    <ArrowLeft size={20} className="group-hover:-translate-x-0.5 transition-transform" />
+                </button>
+            </div>
             <div className="relative z-10 flex flex-col items-center mb-10 w-full max-w-4xl">
 
+                {/* --- BACK BUTTON ADDED HERE --- */}
+
                 {/* Avatar Wrapper */}
-                <div className="relative group mb-6">
+                <div className="relative group mb-6 mt-4 md:mt-0">
                     {/* Glowing Ring */}
                     <div className="absolute inset-[-4px] rounded-full bg-linear-to-br from-purple-600 via-fuchsia-500 to-indigo-600 blur-sm opacity-75 group-hover:opacity-100 transition-opacity duration-500" />
 

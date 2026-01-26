@@ -5,7 +5,9 @@ import UserModel from "@/models/user.model";
 export async function GET() {
   try {
     await connectDB();
-    const vendors = await UserModel.find({ role: "vendor" });
+    const vendors = await UserModel.find({ role: "vendor" }).sort({
+      createdAt: -1,
+    });
     if (vendors.length == 0) {
       return NextResponse.json(
         { message: "No vendors found" },

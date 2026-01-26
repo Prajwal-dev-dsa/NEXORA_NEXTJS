@@ -5,6 +5,7 @@ import { Toaster } from "sonner";
 import StoreProvider from "@/redux/StoreProvider";
 import InitalizeUser from "@/init/initalizeUser";
 import InitializeAllVendors from "@/init/initializeAllVendors";
+import InitializeAllProducts from "@/init/initalizeAllProducts";
 
 export const metadata: Metadata = {
   title: "Nexora",
@@ -23,6 +24,7 @@ export default function RootLayout({
           <StoreProvider>
             <InitalizeUser />
             <InitializeAllVendors />
+            <InitializeAllProducts />
             {children}
           </StoreProvider>
         </Provider>
