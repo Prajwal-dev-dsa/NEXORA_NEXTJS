@@ -16,7 +16,7 @@ import Dashboard from "./Dashboard";
 import VendorDetails from "./VendorDetails";
 import ManageOrders from "./ManageOrders";
 import VendorApproval from "./VendorApproval";
-import ProductRequests from "./ProductRequests";
+import ProductApproval from "./ProductApproval";
 
 export default function AdminDashboard() {
   // State to track the active view
@@ -29,7 +29,7 @@ export default function AdminDashboard() {
     { id: "vendor-details", label: "Vendor Details", icon: Store },
     { id: "manage-orders", label: "Manage Orders", icon: ShoppingBag },
     { id: "vendor-approval", label: "Vendor Approval", icon: ShieldCheck },
-    { id: "product-requests", label: "Product Requests", icon: PackageSearch },
+    { id: "product-approval", label: "Product Approval", icon: PackageSearch },
   ];
 
   // Function to render the selected component
@@ -43,8 +43,8 @@ export default function AdminDashboard() {
         return <ManageOrders />;
       case "vendor-approval":
         return <VendorApproval />;
-      case "product-requests":
-        return <ProductRequests />;
+      case "product-approval":
+        return <ProductApproval />;
       default:
         return <Dashboard />;
     }

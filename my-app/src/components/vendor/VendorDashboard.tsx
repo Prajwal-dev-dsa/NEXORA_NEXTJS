@@ -12,7 +12,7 @@ import {
 
 import Dashboard from "./Dashboard";
 import ManageOrders from "./ManageOrders";
-import Products from "./Products";
+import YourProducts from "./YourProducts";
 
 export default function VendorDashboard() {
   // State to track the active view
@@ -23,7 +23,7 @@ export default function VendorDashboard() {
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
     { id: "manage-orders", label: "Manage Orders", icon: ShoppingBag },
-    { id: "products", label: "Products", icon: PackageSearch },
+    { id: "your-products", label: "Your Products", icon: PackageSearch },
   ];
 
   // Function to render the selected component
@@ -33,8 +33,8 @@ export default function VendorDashboard() {
         return <Dashboard />;
       case "manage-orders":
         return <ManageOrders />;
-      case "products":
-        return <Products />;
+      case "your-products":
+        return <YourProducts />;
       default:
         return <Dashboard />;
     }

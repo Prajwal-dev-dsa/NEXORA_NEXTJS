@@ -1,1 +1,17 @@
 @import "tailwindcss";
+
+@layer utilities {
+
+    /* This creates a class '.custom-scrollbar' that hides the bar but allows scrolling */
+    .custom-scrollbar {
+        -ms-overflow-style: none;
+        /* Internet Explorer 10+ */
+        scrollbar-width: none;
+        /* Firefox */
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+        display: none;
+        /* Safari and Chrome */
+    }
+}
