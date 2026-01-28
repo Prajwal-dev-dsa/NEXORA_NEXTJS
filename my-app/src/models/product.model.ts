@@ -28,7 +28,8 @@ export interface IProduct {
   detailPoints: string[];
   reviews: [
     {
-      user: IUser;
+      userName: string;
+      userImage?: string;
       rating: number;
       comment?: string;
       image?: string;
@@ -134,10 +135,12 @@ const productSchema = new mongoose.Schema<IProduct>(
     },
     reviews: [
       {
-        user: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "User",
+        userName: {
+          type: String,
           required: true,
+        },
+        userImage: {
+          type: String,
         },
         rating: {
           type: Number,
