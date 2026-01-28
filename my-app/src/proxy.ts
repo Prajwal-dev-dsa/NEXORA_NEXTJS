@@ -22,9 +22,9 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  if (pathname.startsWith("/user") && session.user?.role !== "user") {
-    return NextResponse.redirect(new URL("unauthorized", request.url));
-  }
+  // if (pathname.startsWith("/user") && session.user?.role !== "user") {
+  //   return NextResponse.redirect(new URL("unauthorized", request.url));
+  // }
 
   if (pathname.startsWith("/admin") && session.user?.role !== "admin") {
     return NextResponse.redirect(new URL("unauthorized", request.url));

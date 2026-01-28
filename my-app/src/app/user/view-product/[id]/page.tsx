@@ -24,13 +24,15 @@ import { toast } from "sonner";
 export default function ViewProductPage() {
     const { id } = useParams();
     const router = useRouter();
-
     const { allProductsData } = useSelector((state: RootState) => state.vendor);
 
     const [product, setProduct] = useState<any>(null);
     const [activeImage, setActiveImage] = useState("");
     const [selectedSize, setSelectedSize] = useState("");
     const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
+
+    // UI States
+    const [addingToCart, setAddingToCart] = useState(false);
 
     // Review State
     const [rating, setRating] = useState(0);
@@ -70,6 +72,27 @@ export default function ViewProductPage() {
         }
     };
 
+    // --- ADD TO CART HANDLER ---
+    const handleAddToCart = async () => {
+        if (addingToCart) return;
+        setAddingToCart(true);
+        try {
+            const res = await axios.post("/api/user/cart/add-product", {
+                productId: product._id,
+                quantity: 1
+            });
+
+            if (res.status === 200) {
+                toast.success("Added to Cart!");
+                router.push("/user/cart");
+            }
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || "Failed to add to cart");
+        } finally {
+            setAddingToCart(false);
+        }
+    };
+
     const handleSubmitReview = async (e: React.FormEvent) => {
         e.preventDefault();
         if (rating === 0) {
@@ -93,9 +116,7 @@ export default function ViewProductPage() {
 
             if (res.status === 200) {
                 toast.success("Review added successfully!");
-                setProduct(res.data); // Update UI immediately with new data
-
-                // Reset form
+                setProduct(res.data);
                 setRating(0);
                 setComment("");
                 setReviewImage(null);
@@ -113,8 +134,9 @@ export default function ViewProductPage() {
     const images = [product.image1, product.image2, product.image3, product.image4, product.image5].filter(Boolean);
 
     // Calculate Average Rating
-    const averageRating = product.reviews?.length
-        ? product.reviews.reduce((acc: number, review: any) => acc + review.rating, 0) / product.reviews.length
+    const reviewCount = product.reviews?.length || 0;
+    const averageRating = reviewCount > 0
+        ? product.reviews.reduce((acc: number, r: any) => acc + r.rating, 0) / reviewCount
         : 0;
 
     return (
@@ -191,7 +213,7 @@ export default function ViewProductPage() {
                                 <span className="text-amber-400 font-bold text-sm mr-1">{averageRating.toFixed(1)}</span>
                                 <Star size={14} fill="currentColor" className="text-amber-400" />
                             </div>
-                            <span className="text-slate-400 text-sm border-l border-white/10 pl-3">{product.reviews?.length || 0} Verified Reviews</span>
+                            <span className="text-slate-400 text-sm border-l border-white/10 pl-3">{reviewCount} Verified Reviews</span>
                         </div>
 
                         <div className="flex items-baseline gap-4">
@@ -203,6 +225,7 @@ export default function ViewProductPage() {
 
                     <div className="h-px w-full bg-white/5" />
 
+                    {/* Description */}
                     <div className="space-y-2">
                         <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wide">Description</h3>
                         <p className="text-slate-400 leading-relaxed text-sm">
@@ -232,6 +255,7 @@ export default function ViewProductPage() {
                         </div>
                     )}
 
+                    {/* Features */}
                     <div className="grid grid-cols-2 gap-4">
                         <div className="flex items-center gap-3 p-4 rounded-2xl bg-[#120c1f] border border-white/5">
                             <RefreshCcw className="text-purple-400" size={24} />
@@ -281,14 +305,18 @@ export default function ViewProductPage() {
                         <motion.button
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
-                            className="flex-1 py-4 rounded-2xl bg-white text-[#0B0518] font-bold text-lg hover:bg-slate-200 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+                            onClick={handleAddToCart}
+                            disabled={addingToCart}
+                            className="flex-1 py-4 rounded-2xl bg-white text-[#0B0518] font-bold text-lg hover:bg-slate-200 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg disabled:opacity-70"
                         >
-                            <ShoppingCart size={20} /> Add to Cart
+                            {addingToCart ? <Loader2 size={24} className="animate-spin" /> : <><ShoppingCart size={20} /> Add to Cart</>}
                         </motion.button>
                         <motion.button
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
-                            className="flex-1 py-4 rounded-2xl bg-linear-to-r from-purple-600 to-indigo-600 text-white font-bold text-lg shadow-xl shadow-purple-600/30 cursor-pointer transition-all"
+                            onClick={handleAddToCart} // Buy now also goes to cart for simplicity, or could go straight to checkout
+                            disabled={addingToCart}
+                            className="flex-1 py-4 rounded-2xl bg-linear-to-r from-purple-600 to-indigo-600 text-white font-bold text-lg shadow-xl shadow-purple-600/30 cursor-pointer transition-all disabled:opacity-70"
                         >
                             Buy Now
                         </motion.button>
@@ -382,7 +410,6 @@ export default function ViewProductPage() {
                         {product.reviews && product.reviews.length > 0 ? (
                             product.reviews.map((review: any, index: number) => (
                                 <div key={index} className="p-5 rounded-2xl bg-[#120c1f]/30 border border-white/5 flex gap-4">
-                                    {/* User Avatar */}
                                     <div className="w-10 h-10 rounded-full bg-linear-to-br from-purple-500 to-indigo-500 flex items-center justify-center shrink-0">
                                         {review.userImage ? (
                                             <div className="relative w-full h-full rounded-full overflow-hidden">
@@ -395,7 +422,6 @@ export default function ViewProductPage() {
                                         )}
                                     </div>
 
-                                    {/* Content */}
                                     <div className="flex-1">
                                         <div className="flex justify-between items-start mb-2">
                                             <div>

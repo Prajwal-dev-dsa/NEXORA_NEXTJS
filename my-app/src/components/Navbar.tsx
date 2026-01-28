@@ -4,6 +4,8 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 import {
   Menu,
   X,
@@ -38,6 +40,11 @@ export default function Navbar({ user }: NavbarProps) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
 
+  const { userData } = useSelector((state: RootState) => state.user);
+
+  // Calculate Cart Count
+  const cartCount = userData?.cart?.reduce((acc: number, item: any) => acc + item.quantity, 0) || 0;
+
   // Close profile dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -51,7 +58,6 @@ export default function Navbar({ user }: NavbarProps) {
 
   // --- Configuration Based on Role ---
 
-  // 1. Main Navigation Links
   const getNavLinks = () => {
     if (user.role === 'deliveryGuy') return [];
 
@@ -72,7 +78,6 @@ export default function Navbar({ user }: NavbarProps) {
     ];
   };
 
-  // 2. Profile Dropdown Menu Items
   const getProfileMenu = () => {
     switch (user.role) {
       case 'admin':
@@ -148,16 +153,26 @@ export default function Navbar({ user }: NavbarProps) {
               </motion.button>
             )}
 
-            {/* Cart Icon */}
+            {/* Cart Icon with Dynamic Count */}
             {user.role === 'user' && (
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="relative p-2 text-slate-300 hover:text-white hover:bg-white/5 rounded-full cursor-pointer transition-colors"
-              >
-                <ShoppingBag size={20} />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-purple-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(168,85,247,0.8)]" />
-              </motion.button>
+              <Link href="/user/cart">
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="relative p-2 text-slate-300 hover:text-white hover:bg-white/5 rounded-full cursor-pointer transition-colors"
+                >
+                  <ShoppingBag size={20} />
+                  {cartCount > 0 && (
+                    <motion.span
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center bg-purple-600 text-[10px] font-bold text-white rounded-full border-2 border-[#0B0518] shadow-lg shadow-purple-500/50"
+                    >
+                      {cartCount > 99 ? '99+' : cartCount}
+                    </motion.span>
+                  )}
+                </motion.button>
+              </Link>
             )}
 
             {/* Profile Dropdown */}

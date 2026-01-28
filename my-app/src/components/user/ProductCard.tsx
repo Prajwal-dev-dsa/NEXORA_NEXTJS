@@ -7,9 +7,12 @@ import {
     Star,
     ChevronLeft,
     ChevronRight,
+    Loader2
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import axios from "axios";
+import { toast } from "sonner";
 
 interface ProductCardProps {
     product: any;
@@ -19,6 +22,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     const router = useRouter();
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [isHovered, setIsHovered] = useState(false);
+    const [addingToCart, setAddingToCart] = useState(false);
 
     // Gather all valid images into an array
     const images = [
@@ -42,9 +46,33 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         router.push(`/user/view-product/${product._id}`);
     };
 
+    // --- ADD TO CART HANDLER ---
+    const handleAddToCart = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (addingToCart) return;
+
+        setAddingToCart(true);
+        try {
+            const res = await axios.post("/api/user/cart/add-product", {
+                productId: product._id,
+                quantity: 1
+            });
+
+            if (res.status === 200) {
+                toast.success("Added to Cart!");
+                router.push("/user/cart");
+            }
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || "Failed to add to cart");
+        } finally {
+            setAddingToCart(false);
+        }
+    };
+
     // Calculate Average Rating
-    const averageRating = product.reviews?.length
-        ? product.reviews.reduce((acc: number, review: any) => acc + review.rating, 0) / product.reviews.length
+    const reviewCount = product.reviews?.length || 0;
+    const averageRating = reviewCount > 0
+        ? product.reviews.reduce((acc: number, r: any) => acc + r.rating, 0) / reviewCount
         : 0;
 
     return (
@@ -106,8 +134,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                         {images.map((_, idx) => (
                             <div
                                 key={idx}
-                                className={`w-1.5 h-1.5 rounded-full transition-all ${idx === currentImageIndex ? "bg-purple-500 w-3" : "bg-white/50"
-                                    }`}
+                                className={`w-1.5 h-1.5 rounded-full transition-all ${idx === currentImageIndex ? "bg-purple-500 w-3" : "bg-white/50"}`}
                             />
                         ))}
                     </div>
@@ -125,7 +152,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                     <p className="text-xs text-slate-400">{product.category}</p>
                 </div>
 
-                {/* Rating UI (Real Data) */}
+                {/* Rating UI */}
                 <div className="flex items-center gap-2">
                     <div className="flex text-amber-400">
                         {[...Array(5)].map((_, i) => (
@@ -138,7 +165,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                         ))}
                     </div>
                     <span className="text-xs text-slate-500">
-                        ({product.reviews?.length || 0} Reviews)
+                        ({reviewCount} Reviews)
                     </span>
                 </div>
 
@@ -152,10 +179,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={(e) => { e.stopPropagation(); /* Add to cart logic */ }}
-                        className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white text-[#0B0518] font-bold text-xs hover:bg-purple-50 cursor-pointer transition-colors shadow-lg"
+                        onClick={handleAddToCart}
+                        disabled={addingToCart}
+                        className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white text-[#0B0518] font-bold text-xs hover:bg-purple-50 cursor-pointer transition-colors shadow-lg disabled:opacity-70"
                     >
-                        <ShoppingCart size={16} />
+                        {addingToCart ? <Loader2 size={16} className="animate-spin" /> : <ShoppingCart size={16} />}
                         Add
                     </motion.button>
                 </div>
