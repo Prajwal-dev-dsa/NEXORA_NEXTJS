@@ -6,6 +6,7 @@ import StoreProvider from "@/redux/StoreProvider";
 import InitalizeUser from "@/init/initalizeUser";
 import InitializeAllVendors from "@/init/initializeAllVendors";
 import InitializeAllProducts from "@/init/initalizeAllProducts";
+import InitializeAllOrders from "@/init/initalizeAllOrders";
 
 export const metadata: Metadata = {
   title: "Nexora",
@@ -25,6 +26,7 @@ export default function RootLayout({
             <InitalizeUser />
             <InitializeAllVendors />
             <InitializeAllProducts />
+            <InitializeAllOrders />
             {children}
           </StoreProvider>
         </Provider>

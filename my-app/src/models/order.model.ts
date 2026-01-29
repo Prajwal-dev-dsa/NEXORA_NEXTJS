@@ -2,17 +2,22 @@ import mongoose from "mongoose";
 
 export interface IOrder {
   _id?: mongoose.Types.ObjectId;
-  user: mongoose.Types.ObjectId;
+  user: string;
   items: {
     product: mongoose.Types.ObjectId;
-    vendor: mongoose.Types.ObjectId;
+    vendor: string;
     quantity: number;
     price: number;
   }[];
   totalAmount: number;
   paymentMethod: "COD" | "ONLINE";
   paymentStatus: "Pending" | "Paid" | "Failed";
-  orderStatus: "Processing" | "Shipped" | "Delivered" | "Cancelled";
+  orderStatus:
+    | "Processing"
+    | "Confirmed"
+    | "Shipped"
+    | "Delivered"
+    | "Cancelled";
   shippingAddress: {
     street: string;
     city: string;
@@ -27,7 +32,7 @@ export interface IOrder {
 const orderSchema = new mongoose.Schema<IOrder>(
   {
     user: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       ref: "User",
       required: true,
     },
@@ -39,7 +44,7 @@ const orderSchema = new mongoose.Schema<IOrder>(
           required: true,
         },
         vendor: {
-          type: mongoose.Schema.Types.ObjectId,
+          type: String,
           ref: "User",
           required: true,
         },
@@ -70,7 +75,7 @@ const orderSchema = new mongoose.Schema<IOrder>(
     },
     orderStatus: {
       type: String,
-      enum: ["Processing", "Shipped", "Delivered", "Cancelled"],
+      enum: ["Processing", "Confirmed", "Shipped", "Delivered", "Cancelled"],
       default: "Processing",
     },
     shippingAddress: {
