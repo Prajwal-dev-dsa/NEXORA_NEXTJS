@@ -13,10 +13,9 @@ import {
     Clock,
     CheckCircle2,
     ArrowLeft,
-    Printer,
     X,
     FileText,
-    PackageX
+    PackageX,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -44,24 +43,44 @@ export default function MyOrdersPage() {
     const [orders, setOrders] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedOrderForInvoice, setSelectedOrderForInvoice] = useState<any | null>(null);
+    const [processingAction, setProcessingAction] = useState(false);
 
     // Fetch Orders
-    useEffect(() => {
-        const fetchOrders = async () => {
-            try {
-                const res = await axios.get("/api/user/order/get-all-orders");
-                if (res.status === 200) {
-                    setOrders(res.data.orders);
-                }
-            } catch (error) {
-                console.error("Failed to fetch orders", error);
-                toast.error("Could not load your orders.");
-            } finally {
-                setLoading(false);
+    const fetchOrders = async () => {
+        try {
+            const res = await axios.get("/api/user/order/get-all-orders");
+            if (res.status === 200) {
+                setOrders(res.data.orders);
             }
-        };
+        } catch (error) {
+            console.error("Failed to fetch orders", error);
+            toast.error("Could not load your orders.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
         fetchOrders();
     }, []);
+
+    // Handle Cancel Order
+    const handleCancelOrder = async (orderId: string) => {
+        if (!confirm("Are you sure you want to cancel this order?")) return;
+        setProcessingAction(true);
+        try {
+            const res = await axios.post("/api/user/order/cancel-order", { orderId });
+            if (res.status === 200) {
+                toast.success("Order cancelled successfully");
+                fetchOrders();
+                setSelectedOrderForInvoice(null);
+            }
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || "Failed to cancel order");
+        } finally {
+            setProcessingAction(false);
+        }
+    };
 
     // Helper to get Status Color
     const getStatusColor = (status: string) => {
@@ -83,7 +102,7 @@ export default function MyOrdersPage() {
     );
 
     return (
-        <div className="min-h-screen bg-[#0B0518] text-white pt-5 pb-20 px-4 md:px-8 relative">
+        <div className="min-h-screen bg-[#0B0518] text-white pt-6 pb-20 px-4 md:px-8 relative">
 
             {/* Background Ambience */}
             <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
@@ -212,16 +231,8 @@ export default function MyOrdersPage() {
                                                     <p className="font-bold text-white">₹{item.price}</p>
                                                 </div>
 
-                                                <div className="flex items-center gap-4 text-sm text-slate-500">
+                                                <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500">
                                                     <span className="bg-white/5 px-2 py-1 rounded-md">Qty: {item.quantity}</span>
-                                                    {/* Optional: Add 'Write Review' button here if Delivered */}
-                                                    {order.orderStatus === 'Delivered' && item.product?._id && (
-                                                        <Link href={`/user/view-product/${item.product._id}`}>
-                                                            <button className="text-purple-400 hover:text-purple-300 text-xs font-bold hover:underline">
-                                                                Write Review
-                                                            </button>
-                                                        </Link>
-                                                    )}
                                                 </div>
                                             </div>
                                         </div>
@@ -304,7 +315,7 @@ export default function MyOrdersPage() {
                                 <div className="grid grid-cols-2 gap-8 mb-8 text-sm">
                                     <div>
                                         <p className="text-slate-500 font-bold uppercase text-xs mb-2">Billed To</p>
-                                        <p className="text-white font-medium mb-1">User Name</p> {/* Replace with dynamic name if available */}
+                                        <p className="text-white font-medium mb-1">User Name</p>
                                         <p className="text-slate-400">{selectedOrderForInvoice.shippingAddress.street}</p>
                                         <p className="text-slate-400">
                                             {selectedOrderForInvoice.shippingAddress.city}, {selectedOrderForInvoice.shippingAddress.state} - {selectedOrderForInvoice.shippingAddress.zipCode}
@@ -366,12 +377,17 @@ export default function MyOrdersPage() {
 
                             {/* Modal Footer */}
                             <div className="p-6 border-t border-white/10 bg-[#120c1f] flex justify-end gap-3">
-                                <button className="flex items-center gap-2 px-4 py-2 rounded-lg border border-white/10 text-slate-300 hover:bg-white/5 hover:text-white transition-colors text-sm font-medium">
-                                    <Printer size={16} /> Print
-                                </button>
-                                <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white transition-colors cursor-pointer text-sm font-bold shadow-lg shadow-purple-900/20">
-                                    <PackageX size={16} /> Cancel Order
-                                </button>
+                                {/* CANCEL BUTTON LOGIC: Only show if NOT Cancelled, Delivered, or Shipped */}
+                                {['Processing', 'Confirmed'].includes(selectedOrderForInvoice.orderStatus) && (
+                                    <button
+                                        onClick={() => handleCancelOrder(selectedOrderForInvoice._id)}
+                                        disabled={processingAction}
+                                        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white transition-colors cursor-pointer text-sm font-bold shadow-lg shadow-red-900/20 disabled:opacity-50"
+                                    >
+                                        {processingAction ? <Loader2 className="animate-spin" size={16} /> : <PackageX size={16} />}
+                                        Cancel Order
+                                    </button>
+                                )}
                             </div>
                         </motion.div>
                     </motion.div>

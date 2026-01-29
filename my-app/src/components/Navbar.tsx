@@ -89,13 +89,14 @@ export default function Navbar({ user }: NavbarProps) {
       case 'vendor':
         return [
           { label: 'My Profile', icon: UserIcon, href: '/profile' },
-          { label: 'Add Product', icon: PackagePlus, href: `/${user.role}/add-product` },
+          { label: 'Add Product', icon: PackagePlus, href: '/vendor/add-product' },
+          { label: 'Manage Orders', icon: LayoutDashboard, href: '/vendor/manage-orders' },
           { label: 'View Products', icon: ShoppingBasket, href: '/products' },
         ];
       case 'user':
         return [
           { label: 'My Profile', icon: UserIcon, href: '/profile' },
-          { label: 'My Orders', icon: ShoppingBag, href: '/orders' },
+          { label: 'My Orders', icon: ShoppingBag, href: '/user/my-orders' },
           { label: 'Settings', icon: Settings, href: '/settings' },
         ];
       case 'deliveryGuy':

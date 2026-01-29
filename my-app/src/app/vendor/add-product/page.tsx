@@ -75,8 +75,8 @@ export default function AddProductPage() {
         freeDelivery: false,
         cashOnDelivery: false,
         detailPoints: [] as string[],
-        images: [null, null, null, null, null] as (File | null)[],
-        previews: ["", "", "", "", ""] as string[],
+        images: [null, null, null, null] as (File | null)[],
+        previews: ["", "", "", ""] as string[],
     });
 
     // --- HANDLERS ---
@@ -144,7 +144,7 @@ export default function AddProductPage() {
             return;
         }
         if (formData.images.some((img) => img === null)) {
-            toast.error("Please upload all 5 product images.");
+            toast.error("Please upload all 4 product images.");
             return;
         }
         if (formData.isProductWearable && formData.sizes.length === 0) {
@@ -410,7 +410,7 @@ export default function AddProductPage() {
                         <h2 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4">Product Images (5 Required)</h2>
 
                         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                            {[0, 1, 2, 3, 4].map((index) => (
+                            {[0, 1, 2, 3].map((index) => (
                                 <div key={index} className="relative group">
                                     <div className={`
                     aspect-square rounded-2xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-all overflow-hidden
