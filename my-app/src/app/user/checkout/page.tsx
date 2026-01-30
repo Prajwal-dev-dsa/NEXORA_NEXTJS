@@ -46,8 +46,8 @@ export default function CheckoutPage() {
         country: "India"
     });
 
-    // Payment Method State (Currently locked to COD as per requirement)
-    const [paymentMethod, setPaymentMethod] = useState("COD");
+    // Payment Method State
+    const [paymentMethod, setPaymentMethod] = useState<"COD" | "ONLINE">("COD");
 
     // Fetch Cart Data
     useEffect(() => {
@@ -88,16 +88,31 @@ export default function CheckoutPage() {
         setProcessing(true);
 
         try {
-            const res = await axios.post("/api/user/order/cash-on-delivery", {
-                shippingAddress: formData
-            });
+            if (paymentMethod === "COD") {
+                // --- CASH ON DELIVERY FLOW ---
+                const res = await axios.post("/api/user/order/cash-on-delivery", {
+                    shippingAddress: formData
+                });
 
-            if (res.status === 201) {
-                setSuccess(true);
-                toast.success("Order placed successfully!");
+                if (res.status === 201) {
+                    setSuccess(true);
+                    toast.success("Order placed successfully!");
+                }
+            } else {
+                // --- ONLINE PAYMENT (STRIPE) FLOW ---
+                const res = await axios.post("/api/user/order/online-payment", {
+                    shippingAddress: formData
+                });
+
+                if (res.status === 200 && res.data.url) {
+                    // Redirect to Stripe Checkout
+                    window.location.href = res.data.url;
+                } else {
+                    throw new Error("Invalid response from payment server");
+                }
             }
         } catch (error: any) {
-            console.log(error)
+            console.error("Order Error:", error);
             toast.error(error.response?.data?.message || "Failed to place order");
             setProcessing(false);
         }
@@ -118,7 +133,7 @@ export default function CheckoutPage() {
     if (success) return <OrderSuccessPage />;
 
     return (
-        <div className="min-h-screen bg-[#0B0518] text-white pt-10 pb-20 px-4 md:px-8">
+        <div className="min-h-screen bg-[#0B0518] text-white pt-8 pb-20 px-4 md:px-8">
 
             {/* Background Effects */}
             <div className="fixed top-0 left-0 w-[500px] h-[500px] bg-purple-900/20 rounded-full blur-[120px] pointer-events-none" />
@@ -233,8 +248,8 @@ export default function CheckoutPage() {
                                 <div
                                     onClick={() => setPaymentMethod("COD")}
                                     className={`relative p-4 rounded-xl border-2 cursor-pointer transition-all flex items-start gap-4 ${paymentMethod === "COD"
-                                            ? "bg-purple-900/20 border-purple-500 shadow-lg shadow-purple-900/20"
-                                            : "bg-[#0B0518] border-white/5 hover:border-white/10"
+                                        ? "bg-purple-900/20 border-purple-500 shadow-lg shadow-purple-900/20"
+                                        : "bg-[#0B0518] border-white/5 hover:border-white/10"
                                         }`}
                                 >
                                     <div className={`p-3 rounded-full ${paymentMethod === "COD" ? "bg-purple-500 text-white" : "bg-white/5 text-slate-400"}`}>
@@ -251,17 +266,26 @@ export default function CheckoutPage() {
                                     )}
                                 </div>
 
-                                {/* Online Payment Option (Disabled for now visually) */}
+                                {/* Online Payment Option (Stripe) */}
                                 <div
-                                    className="relative p-4 rounded-xl border border-white/5 bg-[#0B0518]/50 opacity-50 cursor-not-allowed flex items-start gap-4"
+                                    onClick={() => setPaymentMethod("ONLINE")}
+                                    className={`relative p-4 rounded-xl border-2 cursor-pointer transition-all flex items-start gap-4 ${paymentMethod === "ONLINE"
+                                        ? "bg-purple-900/20 border-purple-500 shadow-lg shadow-purple-900/20"
+                                        : "bg-[#0B0518] border-white/5 hover:border-white/10"
+                                        }`}
                                 >
-                                    <div className="p-3 rounded-full bg-white/5 text-slate-400">
+                                    <div className={`p-3 rounded-full ${paymentMethod === "ONLINE" ? "bg-purple-500 text-white" : "bg-white/5 text-slate-400"}`}>
                                         <CreditCard size={24} />
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-slate-400">Online Payment</h3>
-                                        <p className="text-xs text-slate-500 mt-1">Temporarily unavailable due to maintenance.</p>
+                                        <h3 className="font-bold text-white">Online Payment</h3>
+                                        <p className="text-xs text-slate-400 mt-1">Secure payment via Stripe.</p>
                                     </div>
+                                    {paymentMethod === "ONLINE" && (
+                                        <div className="absolute top-4 right-4 text-purple-500">
+                                            <CheckCircle2 size={20} fill="currentColor" className="text-purple-900" />
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </motion.div>
@@ -325,7 +349,7 @@ export default function CheckoutPage() {
                             <button
                                 onClick={handlePlaceOrder}
                                 disabled={processing}
-                                className={`w-full py-4 rounded-xl bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-lg shadow-lg shadow-purple-600/30 transition-all flex items-center justify-center gap-3 disabled:opacity-70 ${processing?"cursor-not-allowed":"cursor-pointer"} group`}
+                                className={`w-full py-4 rounded-xl bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-lg shadow-lg shadow-purple-600/30 transition-all flex items-center justify-center gap-3 disabled:opacity-70 ${processing ? "cursor-not-allowed" : "cursor-pointer"} group`}
                             >
                                 {processing ? (
                                     <>
@@ -334,7 +358,7 @@ export default function CheckoutPage() {
                                 ) : (
                                     <>
                                         <Package size={20} className="group-hover:scale-110 transition-transform" />
-                                        Place Order
+                                        {paymentMethod === "COD" ? "Place Order" : "Proceed to Pay"}
                                     </>
                                 )}
                             </button>

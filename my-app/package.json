@@ -25,6 +25,7 @@
     "react-icons": "^5.5.0",
     "react-redux": "^9.2.0",
     "sonner": "^2.0.7",
+    "stripe": "^20.3.0",
     "validator": "^13.15.26"
   },
   "devDependencies": {

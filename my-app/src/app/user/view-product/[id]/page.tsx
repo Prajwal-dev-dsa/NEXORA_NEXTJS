@@ -219,7 +219,7 @@ export default function ViewProductPage() {
                         <div className="flex items-baseline gap-4">
                             <span className="text-4xl font-black text-white">₹{product.price}</span>
                             <span className="text-lg text-slate-500 line-through">₹{product.price + 500}</span>
-                            <span className="text-green-400 text-sm font-bold">In Stock</span>
+                            <span className={`${product.stock > 0 ? "text-green-400" : "text-red-400"} text-sm font-bold`}>{product.stock > 0 ? "In Stock" : "Out of Stock"}</span>
                         </div>
                     </div>
 
