@@ -14,7 +14,7 @@ import {
 
 import Dashboard from "./Dashboard";
 import VendorDetails from "./VendorDetails";
-import ManageOrders from "./ManageOrders";
+import UserOrders from "./UserOrders";
 import VendorApproval from "./VendorApproval";
 import ProductApproval from "./ProductApproval";
 
@@ -27,7 +27,7 @@ export default function AdminDashboard() {
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
     { id: "vendor-details", label: "Vendor Details", icon: Store },
-    { id: "manage-orders", label: "Manage Orders", icon: ShoppingBag },
+    { id: "user-orders", label: "User Orders", icon: ShoppingBag },
     { id: "vendor-approval", label: "Vendor Approval", icon: ShieldCheck },
     { id: "product-approval", label: "Product Approval", icon: PackageSearch },
   ];
@@ -39,8 +39,8 @@ export default function AdminDashboard() {
         return <Dashboard />;
       case "vendor-details":
         return <VendorDetails />;
-      case "manage-orders":
-        return <ManageOrders />;
+      case "user-orders":
+        return <UserOrders />;
       case "vendor-approval":
         return <VendorApproval />;
       case "product-approval":
@@ -143,15 +143,6 @@ export default function AdminDashboard() {
 
       {/* --- MAIN CONTENT AREA --- */}
       <main className="flex-1 p-4 md:p-8 overflow-hidden min-h-[calc(100vh-80px)]">
-
-        {/* Header for Current Section */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white capitalize">
-            {activeTab.replace("-", " ")}
-          </h1>
-          <p className="text-slate-400 text-sm mt-1">Overview of your platform activity</p>
-        </div>
-
         {/* Content Animation Wrapper */}
         <div className="w-full relative">
           <AnimatePresence mode="wait">

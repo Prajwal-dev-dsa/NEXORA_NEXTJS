@@ -99,6 +99,11 @@ export default function VendorApproval() {
       {/* --- Header Section --- */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
 
+        {/* Heading */}
+        <div>
+          <h1 className="text-3xl font-bold text-white">Vendor Approvals</h1>
+          <p className="text-slate-400 text-sm mt-1">Review and manage incoming vendor applications</p>
+        </div>
 
         {/* Status Pill */}
         <div className="flex items-center gap-3 px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-full shadow-[0_0_15px_rgba(168,85,247,0.15)] self-start md:self-auto">
