@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store";
-import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus,
@@ -13,6 +12,7 @@ import {
   CheckCircle2,
   Clock,
   Package,
+  PackageSearch,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,7 +21,6 @@ import { toast } from "sonner";
 import { setAllProductsData } from "@/redux/slices/vendorSlice";
 
 export default function VendorProductsPage() {
-  const router = useRouter();
   const dispatch = useDispatch();
 
   // 1. Get Data
@@ -76,13 +75,25 @@ export default function VendorProductsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B0518] text-white  pb-10 px-4 md:px- flex flex-col items-center relative overflow-hidden">
-      {/* Background Ambience */}
-      <div className="fixed top-0 left-1/4 w-[600px] h-[600px] bg-purple-900/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="fixed bottom-0 right-1/4 w-[500px] h-[500px] bg-indigo-900/10 rounded-full blur-[100px] pointer-events-none" />
+    // Fixed: md:px-8 instead of md:px-
+    <div className="min-h-screen bg-[#0B0518] text-white pb-10 flex flex-col items-center relative overflow-hidden">
+
       {/* --- HEADER SECTION --- */}
-      <div className="relative z-10 w-full max-w-7xl flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-        <div className="relative flex-1 md:w-64">
+      <div className="relative z-10 w-full max-w-7xl flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 ">
+
+        {/* --- HEADER --- */}
+        {/* Fixed: Removed mb-10 which was breaking layout */}
+        <div className="flex items-center gap-4">
+          <div className="p-3 bg-linear-to-br from-purple-600 to-indigo-600 rounded-2xl shadow-lg shadow-purple-500/20">
+            <PackageSearch className="text-white w-8 h-8" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-white">Your Products</h1>
+            <p className="text-slate-400 text-sm">Manage your product listings</p>
+          </div>
+        </div>
+
+        <div className="relative flex-1 md:w-64 md:max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
           <input
             type="text"
@@ -92,8 +103,8 @@ export default function VendorProductsPage() {
             className="w-full pl-10 pr-4 py-2.5 bg-[#120c1f] border border-white/10 rounded-xl text-sm focus:outline-none focus:border-purple-500/50 transition-all placeholder:text-slate-600"
           />
         </div>
-        <div className="flex items-center gap-4 w-full md:w-auto">
 
+        <div className="flex items-center gap-4 w-full md:w-auto pr-3">
           {/* Add New Button */}
           <Link href="/vendor/add-product">
             <motion.button

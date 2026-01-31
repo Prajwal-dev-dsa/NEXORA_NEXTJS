@@ -4,14 +4,12 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard,
-  ShoppingBag,
   PackageSearch,
   Menu,
   X
 } from "lucide-react";
 
 import Dashboard from "./Dashboard";
-import ManageOrders from "./ManageOrders";
 import YourProducts from "./YourProducts";
 
 export default function VendorDashboard() {
@@ -22,7 +20,6 @@ export default function VendorDashboard() {
   // Configuration for Sidebar Items
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { id: "manage-orders", label: "Manage Orders", icon: ShoppingBag },
     { id: "your-products", label: "Your Products", icon: PackageSearch },
   ];
 
@@ -31,8 +28,6 @@ export default function VendorDashboard() {
     switch (activeTab) {
       case "dashboard":
         return <Dashboard />;
-      case "manage-orders":
-        return <ManageOrders />;
       case "your-products":
         return <YourProducts />;
       default:
@@ -133,15 +128,6 @@ export default function VendorDashboard() {
 
       {/* --- MAIN CONTENT AREA --- */}
       <main className="flex-1 p-4 md:p-8 overflow-hidden min-h-[calc(100vh-80px)]">
-
-        {/* Header for Current Section */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white capitalize">
-            {activeTab.replace("-", " ")}
-          </h1>
-          <p className="text-slate-400 text-sm mt-1">Overview of your platform activity</p>
-        </div>
-
         {/* Content Animation Wrapper */}
         <div className="w-full relative">
           <AnimatePresence mode="wait">
