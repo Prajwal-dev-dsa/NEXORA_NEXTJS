@@ -2,6 +2,7 @@
 import HeroSection from "./HeroSection";
 import CategorySlider from "./CategorySlider";
 import Products from "./Products";
+import Shops from "./Shops";
 
 function UserDashboard() {
   return (
@@ -9,6 +10,7 @@ function UserDashboard() {
       <HeroSection />
       <CategorySlider />
       <Products />
+      <Shops />
     </div>
   )
 }
