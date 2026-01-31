@@ -15,11 +15,11 @@ import {
   ArrowLeft,
   ChevronRight,
   Package,
-  Tag,
   Clock,
   ShieldCheck,
   Truck,
-  DollarSign
+  DollarSign,
+  PackageSearch
 } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
@@ -102,7 +102,11 @@ export default function ProductApproval() {
 
         {/* Heading */}
         <div>
-          <h1 className="text-3xl font-bold text-white">Product Approvals</h1>
+          <h1 className="text-3xl flex items-center gap-3 font-bold text-white">
+            <div className="p-3 bg-linear-to-br from-blue-600 to-indigo-600 rounded-2xl shadow-lg shadow-blue-500/20">
+              <PackageSearch className="text-white w-8 h-8" />
+            </div>
+            Product Approvals</h1>
           <p className="text-slate-400 text-sm mt-1">Review and manage incoming product requests</p>
         </div>
 

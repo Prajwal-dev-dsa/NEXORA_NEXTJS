@@ -85,8 +85,8 @@ export default function AdminOrdersList() {
   };
 
   if (loading) return (
-    <div className="flex flex-col items-center justify-center gap-4 py-20">
-      <Loader2 className="animate-spin text-purple-500 w-10 h-10" />
+    <div className="min-h-screen bg-[#0B0518] flex flex-col items-center justify-center gap-4">
+      <Loader2 className="animate-spin text-purple-500 w-12 h-12" />
       <p className="text-slate-400 animate-pulse text-sm">Loading System Orders...</p>
     </div>
   );
@@ -98,6 +98,9 @@ export default function AdminOrdersList() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3 text-white">
+            <div className="p-3 bg-linear-to-br from-blue-600 to-indigo-600 rounded-2xl shadow-lg shadow-blue-500/20">
+              <ShoppingBag className="text-white w-8 h-8" />
+            </div>
             System Orders
           </h1>
         </div>

@@ -9,7 +9,8 @@ import {
   Loader2,
   ArrowRight,
   Users,
-  Mail
+  Mail,
+  Store
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -84,6 +85,9 @@ export default function AdminVendorsPage() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
           <div>
             <h1 className="text-3xl font-bold flex items-center gap-3">
+              <div className="p-3 bg-linear-to-br from-blue-600 to-indigo-600 rounded-2xl shadow-lg shadow-blue-500/20">
+                <Store className="text-white w-8 h-8" />
+              </div>
               Verified Vendors
             </h1>
             <p className="text-slate-400 text-sm mt-2 ml-1">

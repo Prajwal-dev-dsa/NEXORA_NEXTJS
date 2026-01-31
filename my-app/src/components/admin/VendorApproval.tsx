@@ -18,6 +18,7 @@ import {
   ArrowLeft,
   FileText,
   ChevronRight,
+  ShieldCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 import { IUser } from "@/models/user.model";
@@ -101,7 +102,11 @@ export default function VendorApproval() {
 
         {/* Heading */}
         <div>
-          <h1 className="text-3xl font-bold text-white">Vendor Approvals</h1>
+          <h1 className="text-3xl font-bold flex items-center gap-3 text-white">
+            <div className="p-3 bg-linear-to-br from-blue-600 to-indigo-600 rounded-2xl shadow-lg shadow-blue-500/20">
+              <ShieldCheck className="text-white w-8 h-8" />
+            </div>
+            Vendor Approvals</h1>
           <p className="text-slate-400 text-sm mt-1">Review and manage incoming vendor applications</p>
         </div>
 
